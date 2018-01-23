@@ -6,6 +6,8 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.autograd import Variable
 import torch.nn.functional as F
+import matplotlib.pyplot as plt
+from moviepy.editor import ImageSequenceClip
 
 # hyper parameters
 EPISODES = 1000  # number of episodes
@@ -41,7 +43,6 @@ class ReplayMemory:
     def __len__(self):
         return len(self.memory)
 
-
 class Network(nn.Module):
     def __init__(self):
         nn.Module.__init__(self)
@@ -63,6 +64,17 @@ if use_cuda:
 memory = ReplayMemory(10000)
 optimizer = optim.Adam(model.parameters(), LR)
 steps_done = 0
+ed = []
+
+# def plot_durations(d):
+#     plt.figure(2)
+#     plt.clf()
+#     plt.title('Training...')
+#     plt.xlabel('Episode')
+#     plt.ylabel('Duration')
+#     plt.plot(d)
+#
+#     plt.savefig('test.png')
 
 def select_action(state, train=True):
     global steps_done
@@ -81,7 +93,7 @@ def run_episode(episode, env):
     state = env.reset()
     steps = 0
     while True:
-        env.render()
+        # env.render()
         action = select_action(FloatTensor([state]))
         next_state, reward, done, _ = env.step(action[0, 0])
 
@@ -108,12 +120,15 @@ def run_episode(episode, env):
         state = next_state
         steps += 1
 
-        if done:
+        if done or steps >= 1000:
+            ed.append(steps)
             print("[Episode {:>5}]  steps: {:>5}".format(episode, steps))
+            if sum(ed[-10:])/10 > 800:
+                return True
             break
+    return False
 
 def learn():
-
     if len(memory) < BATCH_SIZE:
         return
 
@@ -143,19 +158,27 @@ def learn():
 def botPlay():
     state = env.reset()
     steps = 0
+    frames = []
     while True:
-        env.render()
+        frame = env.render(mode='rgb_array')
+        frames.append(frame)
         action = select_action(FloatTensor([state]))
         next_state, reward, done, _ = env.step(action[0, 0])
 
         state = next_state
         steps += 1
 
-        if done:
+        if done or steps >= 1000:
             break
 
+    clip = ImageSequenceClip(frames, fps=20)
+    clip.write_gif('test.gif', fps=20)
+
 for e in range(EPISODES):
-    run_episode(e, env)
+    complete = run_episode(e, env)
+
+    if complete:
+        break
 
     if (e+1) % 5 == 0:
         mp = list(target.parameters())
@@ -163,3 +186,6 @@ for e in range(EPISODES):
         n = len(mp)
         for i in range(0, n):
             mp[i].data[:] = mcp[i].data[:]
+
+# plot_durations(ed)
+# botPlay()
