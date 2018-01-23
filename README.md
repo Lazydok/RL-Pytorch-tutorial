@@ -1,4 +1,4 @@
-# RL-Pytorch-tutorial
+# RL-Pytorch-Cartpole
 Reinforcement Learning tutorial with pytorch
 
 > Implemented algorithms:
