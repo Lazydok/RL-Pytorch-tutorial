@@ -1,7 +1,7 @@
 # RL-Pytorch-tutorial
 Reinforcement Learning tutorial with pytorch
 
-Implemented algorithms:
+> Implemented algorithms:
 
 * Deep Q-Learning (DQN)
 * Double DQN
