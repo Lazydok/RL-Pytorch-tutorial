@@ -13,7 +13,7 @@ Reinforcement Learning tutorial with pytorch
 
 Learning(Max Steps: 1000) :
 
-![alt text](/img/1_dqn_score.png "Learning(Max Steps: 1000)"
+![alt text](/img/1_dqn_score.png "Learning(Max Steps: 1000)")
 
 Playing :
 
@@ -23,7 +23,7 @@ Playing :
 
 Learning(Max Steps: 1000) :
 
-![alt text](/img/2_double_dqn_score.png "Learning(Max Steps: 1000)"
+![alt text](/img/2_double_dqn_score.png "Learning(Max Steps: 1000)")
 
 Playing :
 
