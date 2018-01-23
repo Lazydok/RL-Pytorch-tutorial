@@ -178,6 +178,7 @@ for e in range(EPISODES):
     complete = run_episode(e, env)
 
     if complete:
+        print('complete...!')
         break
 
     if (e+1) % 5 == 0:
