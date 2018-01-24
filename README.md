@@ -11,7 +11,7 @@ Reinforcement Learning tutorial with pytorch
 
 > DQN
 
-Learning(Max Steps: 1000) :
+Learning(Max Step: 1000) :
 
 ![alt text](/img/1_dqn_score.png "Learning(Max Steps: 1000)")
 
@@ -21,7 +21,7 @@ Playing :
 
 > Double DQN
 
-Learning(Max Steps: 1000) :
+Learning(Max Step: 1000) :
 
 ![alt text](/img/2_double_dqn_score.png "Learning(Max Steps: 1000)")
 
