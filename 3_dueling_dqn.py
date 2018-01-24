@@ -10,10 +10,10 @@ import matplotlib.pyplot as plt
 from moviepy.editor import ImageSequenceClip
 
 # hyper parameters
-EPISODES = 1000  # number of episodes
+EPISODES = 500  # number of episodes
 EPS_START = 0.9  # e-greedy threshold start value
 EPS_END = 0.05  # e-greedy threshold end value
-EPS_DECAY = 200  # e-greedy threshold decay
+EPS_DECAY = 100  # e-greedy threshold decay
 GAMMA = 0.75  # Q-learning discount factor
 LR = 0.001  # NN optimizer learning rate
 HIDDEN_LAYER = 164  # NN hidden layer size
@@ -25,7 +25,6 @@ FloatTensor = torch.cuda.FloatTensor if use_cuda else torch.FloatTensor
 LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
 ByteTensor = torch.cuda.ByteTensor if use_cuda else torch.ByteTensor
 Tensor = FloatTensor
-
 
 class ReplayMemory:
     def __init__(self, capacity):
@@ -45,36 +44,36 @@ class ReplayMemory:
 
 class Network(nn.Module):
     def __init__(self):
-        nn.Module.__init__(self)
+        super(Network, self).__init__()
         self.l1 = nn.Linear(4, HIDDEN_LAYER)
-        self.l2 = nn.Linear(HIDDEN_LAYER, 2)
+        self.l2_A = nn.Linear(HIDDEN_LAYER, 2)
+        self.l2_V = nn.Linear(HIDDEN_LAYER, 1)
 
     def forward(self, x):
         x = F.relu(self.l1(x))
-        x = self.l2(x)
-        return x
+        a = self.l2_A(x)
+        v = self.l2_V(x)
+        return v + (a - a.max(1, keepdim=True)[0])
 
 env = gym.make('CartPole-v0').unwrapped
 
 model = Network()
-target = Network()
 if use_cuda:
     model.cuda()
-    target.cuda()
 memory = ReplayMemory(10000)
 optimizer = optim.Adam(model.parameters(), LR)
 steps_done = 0
 ed = []
 
-# def plot_durations(d):
-#     plt.figure(2)
-#     plt.clf()
-#     plt.title('Training...')
-#     plt.xlabel('Episode')
-#     plt.ylabel('Duration')
-#     plt.plot(d)
-#
-#     plt.savefig('3_dueling_dqn_score.png')
+def plot_durations(d):
+    plt.figure(2)
+    plt.clf()
+    plt.title('Training...')
+    plt.xlabel('Episode')
+    plt.ylabel('Duration')
+    plt.plot(d)
+
+    plt.savefig('3_dueling_dqn_score.png')
 
 def select_action(state, train=True):
     global steps_done
@@ -123,7 +122,7 @@ def run_episode(episode, env):
         if done or steps >= 1000:
             ed.append(steps)
             print("[Episode {:>5}]  steps: {:>5}".format(episode, steps))
-            if sum(ed[-10:])/10 > 800:
+            if sum(ed[-5:])/5 > 990:
                 return True
             break
     return False
@@ -144,7 +143,7 @@ def learn():
     # current Q values are estimated by NN for all actions
     current_q_values = model(batch_state).gather(1, batch_action)
     # expected Q values are estimated from actions which gives maximum Q value
-    max_next_q_values = target(batch_next_state).detach().max(1)[0]
+    max_next_q_values = model(batch_next_state).detach().max(1)[0]
     expected_q_values = batch_reward + (GAMMA * max_next_q_values)
 
     # loss is measured from error between current and newly expected Q values
@@ -181,12 +180,5 @@ for e in range(EPISODES):
         print('complete...!')
         break
 
-    if (e+1) % 5 == 0:
-        mp = list(target.parameters())
-        mcp = list(model.parameters())
-        n = len(mp)
-        for i in range(0, n):
-            mp[i].data[:] = mcp[i].data[:]
-
-# plot_durations(ed)
-# botPlay()
+plot_durations(ed)
+botPlay()
