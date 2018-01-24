@@ -28,8 +28,8 @@ Playing :
 
 > Double DQN
 
-![alt text](/img/3_deuling_dqn_score.png "Learning")
+![alt text](/img/3_dueling_dqn_score.png "Learning")
 
 Playing :
 
-![alt text](/img/3_deuling_dqn_play.gif "Playing")
+![alt text](/img/3_dueling_dqn_play.gif "Playing")
