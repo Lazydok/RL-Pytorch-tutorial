@@ -26,7 +26,7 @@ Playing :
 
 ![alt text](/img/2_double_dqn_play.gif "Playing")
 
-> Double DQN
+> Dueling DQN
 
 ![alt text](/img/3_dueling_dqn_score.png "Learning")
 
