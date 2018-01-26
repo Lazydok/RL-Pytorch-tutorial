@@ -6,6 +6,7 @@ Reinforcement Learning tutorial by pytorch
 * Deep Q-Learning (DQN)
 * Double DQN
 * Dueling DQN
+* Policy Gradient
 
 # Learning & Playing
 Max step : 1000
