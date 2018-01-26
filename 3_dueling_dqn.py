@@ -73,7 +73,7 @@ def plot_durations(d):
     plt.ylabel('Duration')
     plt.plot(d)
 
-    plt.savefig('3_dueling_dqn_score.png')
+    plt.savefig('4_policy_gradient_score.png')
 
 def select_action(state, train=True):
     global steps_done
@@ -171,7 +171,7 @@ def botPlay():
             break
 
     clip = ImageSequenceClip(frames, fps=20)
-    clip.write_gif('3_dueling_dqn_play.gif', fps=20)
+    clip.write_gif('4_policy_gradient_play.gif', fps=20)
 
 for e in range(EPISODES):
     complete = run_episode(e, env)

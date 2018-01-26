@@ -1,5 +1,5 @@
 # RL-Pytorch-Cartpole
-Reinforcement Learning tutorial with pytorch
+Reinforcement Learning tutorial by pytorch
 
 > Implemented algorithms:
 
@@ -33,3 +33,12 @@ Playing :
 Playing :
 
 ![alt text](/img/3_dueling_dqn_play.gif "Playing")
+
+> Policy Gradient
+
+More stable, Faster(not needed replay memory), more simple(not needed customizing policy)
+![alt text](/img/4_policy_gradient_score.png "Learning")
+
+Playing :
+
+![alt text](/img/4_policy_gradient_play.gif "Playing")
