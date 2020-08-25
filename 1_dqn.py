@@ -93,7 +93,7 @@ def run_episode(episode, env):
     while True:
         # env.render()
         action = select_action(FloatTensor([state]))
-        next_state, reward, done, _ = env.step(action[0, 0])
+        next_state, reward, done, _ = env.step(action[0, 0].item())
 
         # negative reward when attempt ends
         if done:
@@ -136,14 +136,14 @@ def learn():
 
     batch_state = Variable(torch.cat(batch_state))
     batch_action = Variable(torch.cat(batch_action))
-    batch_reward = Variable(torch.cat(batch_reward))
+    batch_reward = Variable(torch.cat(batch_reward)).unsqueeze(-1)
     batch_next_state = Variable(torch.cat(batch_next_state))
 
     # current Q values are estimated by NN for all actions
     current_q_values = model(batch_state).gather(1, batch_action)
     # expected Q values are estimated from actions which gives maximum Q value
     max_next_q_values = model(batch_next_state).detach().max(1)[0]
-    expected_q_values = batch_reward + (GAMMA * max_next_q_values)
+    expected_q_values = batch_reward + (GAMMA * max_next_q_values).unsqueeze(-1)
 
     # loss is measured from error between current and newly expected Q values
     loss = F.smooth_l1_loss(current_q_values, expected_q_values)
@@ -161,7 +161,7 @@ def botPlay():
         frame = env.render(mode='rgb_array')
         frames.append(frame)
         action = select_action(FloatTensor([state]))
-        next_state, reward, done, _ = env.step(action[0, 0])
+        next_state, reward, done, _ = env.step(action[0, 0].item())
 
         state = next_state
         steps += 1
